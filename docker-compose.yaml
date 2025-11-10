@@ -20,13 +20,15 @@ services:
       dockerfile: Dockerfile
     expose:
       - "5173"
+    volumes:
+      - ./php/public/build:/assets-out
     healthcheck:
       test:
         [
           "CMD",
           "node",
           "-e",
-          "fetch('http://localhost:5173/ssr').then(res => res.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))",
+          "fetch('http://localhost:5173/health').then(res => res.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))",
         ]
       interval: 10s
       timeout: 5s

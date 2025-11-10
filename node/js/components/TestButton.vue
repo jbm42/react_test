@@ -1,16 +1,22 @@
 <template>
-  <button class="button" type="button" @click="$emit('click')">
+  <button class="button" type="button" @click="handleClick">
     {{ label }}
   </button>
 </template>
 
 <script setup>
+const emit = defineEmits(['click'])
+
 defineProps({
   label: {
     type: String,
     default: 'Click me',
   },
 })
+
+function handleClick(event) {
+  emit('click', event)
+}
 </script>
 
 <style scoped>

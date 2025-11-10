@@ -2,7 +2,7 @@
 require_once __DIR__ . '/ssr_bootstrap.php';
 
 $pageName = 'test-one';
-$title = 'SSR Demo — Test One';
+$title = 'Test Page One — Counter Demo';
 $ssr = getSsrPayload($pageName);
 ?>
 <!DOCTYPE html>
@@ -72,8 +72,8 @@ $ssr = getSsrPayload($pageName);
   <main>
     <section>
       <h1><?= htmlspecialchars($title, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></h1>
+      <p>This host template exercises the counter-driven Vue component.</p>
       <p>Server time: <?= date("H:i:s") ?></p>
-      <p>This host page renders the <code><?= htmlspecialchars($ssr['page'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></code> Vue component.</p>
     </section>
 
     <div id="reactive" data-page="<?= htmlspecialchars($ssr['page'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>"><?= $ssr['html'] ?></div>
@@ -88,3 +88,4 @@ $ssr = getSsrPayload($pageName);
 <?php endif; ?>
 </body>
 </html>
+

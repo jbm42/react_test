@@ -2,7 +2,6 @@ import express from 'express'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 import { readFileSync } from 'node:fs'
-
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
 const isProd = process.env.NODE_ENV === 'production'
@@ -21,7 +20,13 @@ const { render } = await import(resolve(serverDist, 'entry-server.js'))
 
 const app = express()
 
+const DEFAULT_PAGE = 'test-one'
+
 app.use('/assets', express.static(resolve(clientDist, 'assets')))
+
+app.get('/health', (_req, res) => {
+  res.type('text/plain').send('ok')
+})
 
 function resolveAssetPaths(modules = []) {
   const css = new Set()
@@ -56,14 +61,20 @@ function resolveAssetPaths(modules = []) {
   }
 }
 
-app.get('/ssr', async (_req, res) => {
+app.get('/ssr', async (req, res) => {
   try {
-    const { html, modules } = await render()
+    const requestedPage =
+      typeof req.query.page === 'string' && req.query.page.trim().length > 0
+        ? req.query.page.trim()
+        : DEFAULT_PAGE
+
+    const { html, modules } = await render(requestedPage)
     const assets = resolveAssetPaths(modules)
     res.json({
       html,
       entry: assets.entry,
       css: assets.css,
+      page: requestedPage,
     })
   } catch (err) {
     console.error(err)
