@@ -1,0 +1,25 @@
+# General
+.DS_Store
+Thumbs.db
+
+# Node / Vite
+node/node_modules/
+node/npm-debug.log*
+node/package-lock.json
+node/dist/
+
+# PHP build assets
+php/public/build/
+
+# Docker artifacts
+*.log
+.env
+
+*~
+
+# Editor
+.vscode/
+.idea/
+*.swp
+*.swo
+

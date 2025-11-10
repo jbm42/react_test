@@ -1,0 +1,9 @@
+version: '3.9'
+      
+services:
+  php:
+    build:
+      context: .              # include both php/ and node/
+      dockerfile: php/Dockerfile
+    ports:
+      - "8080:80"
