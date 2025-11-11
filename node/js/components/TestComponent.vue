@@ -52,15 +52,18 @@ onUnmounted(() => {
 
 <style scoped>
 .test {
-  padding: 1.5rem;
-  border-radius: 12px;
-  border: 1px solid #d0d7de;
-  background-color: #f6f8fa;
-  color: #24292f;
+  padding: 1.75rem;
+  border-radius: 18px;
+  border: 1px solid #76a9fa;
+  background: rgba(19, 75, 138, 0.9);
+  color: #f0f9ff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 12px 24px rgba(13, 71, 161, 0.25);
 }
 
 p {
-  margin-bottom: 1rem;
+  margin-bottom: 1.25rem;
 }
 </style>
 

@@ -68,13 +68,26 @@ app.get('/ssr', async (req, res) => {
         ? req.query.page.trim()
         : DEFAULT_PAGE
 
-    const { html, modules } = await render(requestedPage)
+    let context = {}
+    if (typeof req.query.context === 'string' && req.query.context.length > 0) {
+      try {
+        const parsed = JSON.parse(req.query.context)
+        if (parsed && typeof parsed === 'object') {
+          context = parsed
+        }
+      } catch (err) {
+        console.warn('[ssr] failed to parse context payload', err)
+      }
+    }
+
+    const { html, modules } = await render(requestedPage, context)
     const assets = resolveAssetPaths(modules)
     res.json({
       html,
       entry: assets.entry,
       css: assets.css,
       page: requestedPage,
+      context,
     })
   } catch (err) {
     console.error(err)

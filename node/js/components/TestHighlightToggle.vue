@@ -32,21 +32,32 @@ function toggleHighlight() {
 .test-two {
   display: flex;
   flex-direction: column;
-  gap: 1.5rem;
+  gap: 1.65rem;
+  background: rgba(18, 52, 100, 0.9);
+  padding: 1.75rem;
+  border-radius: 18px;
+  border: 1px solid #8fb3ff;
+  box-shadow:
+    inset 0 1px 0 rgba(255, 255, 255, 0.12),
+    0 16px 30px rgba(30, 58, 138, 0.3);
 }
 
 ul {
   margin: 0;
-  padding: 1rem;
+  padding: 1.25rem;
   list-style: square inside;
-  border: 1px solid #d0d7de;
-  border-radius: 12px;
-  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out;
+  border: 1px solid #c4d9ff;
+  border-radius: 14px;
+  background: rgba(12, 41, 85, 0.9);
+  transition: background-color 0.2s ease-in-out, border-color 0.2s ease-in-out,
+    transform 0.2s ease-in-out;
 }
 
 ul.highlighted {
-  background-color: #fff3d4;
-  border-color: #d4a72c;
+  background-color: #ffe483;
+  border-color: #facc15;
+  transform: translateY(-2px);
+  color: #2c1810;
 }
 </style>
 

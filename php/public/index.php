@@ -1,58 +1,54 @@
 <?php
 require_once __DIR__ . '/reactive.php';
 
+function redirectWithQuery(array $params): void
+{
+    $current = $_GET;
+    foreach ($params as $key => $value) {
+        if ($value === null) {
+            unset($current[$key]);
+        } else {
+            $current[$key] = $value;
+        }
+    }
+
+    $query = http_build_query($current);
+    $target = strtok($_SERVER['REQUEST_URI'], '?');
+    if ($query !== '') {
+        $target .= '?' . $query;
+    }
+    header('Location: ' . $target);
+    exit;
+}
+
+if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+    if (isset($_POST['toggle_theme'])) {
+        $current = isset($_GET['theme']) ? $_GET['theme'] : '0';
+        $next = $current === '1' ? '0' : '1';
+        redirectWithQuery(['theme' => $next]);
+    }
+
+    if (isset($_POST['toggle_ssr'])) {
+        $current = $_GET['ssr'] ?? '1';
+        $next = $current === '0' ? '1' : '0';
+        redirectWithQuery(['ssr' => $next]);
+    }
+}
+
 $pageName = 'test-one';
 $title = 'SSR Demo — Test One';
+$altStylesheet = isset($_GET['theme']) ? $_GET['theme'] === '1' : false;
+$ssrEnabled = !isset($_GET['ssr']) || $_GET['ssr'] !== '0';
 ?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="utf-8">
   <title><?= htmlspecialchars($title, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></title>
-  <style>
-    body {
-      font-family: Avenir, Helvetica, Arial, sans-serif;
-      margin: 0;
-      background-color: #f6f8fa;
-      color: #24292f;
-    }
-
-    header {
-      background-color: #fff;
-      border-bottom: 1px solid #d0d7de;
-      padding: 1rem 2rem;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-
-    header nav {
-      display: flex;
-      gap: 1rem;
-    }
-
-    header a {
-      color: #0969da;
-      text-decoration: none;
-      font-weight: 600;
-    }
-
-    main {
-      max-width: 960px;
-      margin: 2rem auto;
-      padding: 0 1.5rem;
-      display: flex;
-      flex-direction: column;
-      gap: 1.5rem;
-    }
-
-    #reactive {
-      background-color: #fff;
-      border-radius: 16px;
-      box-shadow: 0 10px 30px rgba(15, 23, 42, 0.08);
-      padding: 2rem;
-    }
-  </style>
+  <?php
+    $stylesheetHref = $altStylesheet ? '/style2.css' : '/style.css';
+  ?>
+  <link rel="stylesheet" href="<?= htmlspecialchars($stylesheetHref, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>" id="php-theme">
 </head>
 <body>
   <header>
@@ -70,6 +66,17 @@ $title = 'SSR Demo — Test One';
       <h1><?= htmlspecialchars($title, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></h1>
       <p>Server time: <?= date("H:i:s") ?></p>
       <p>This host page renders the <code><?= htmlspecialchars($pageName, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></code> Vue component.</p>
+      <form action="" method="post" style="margin-top:1.5rem;">
+        <button type="submit" name="toggle_theme" value="1" class="toggle-theme">
+          Switch to <?= $altStylesheet ? 'Classic' : 'Radical' ?> Theme
+        </button>
+      </form>
+      <form action="" method="post" style="margin-top:1rem;">
+        <button type="submit" name="toggle_ssr" value="1" class="toggle-ssr">
+          <?= $ssrEnabled ? 'Disable SSR (Client Render Only)' : 'Enable SSR Rendering' ?>
+        </button>
+      </form>
+      <p class="ssr-status">SSR is currently <strong><?= $ssrEnabled ? 'enabled' : 'disabled' ?></strong>.</p>
     </section>
 
     <?= reactiveComponent($pageName) ?>
