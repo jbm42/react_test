@@ -1,0 +1,11 @@
+{
+  "entry-client.js": {
+    "file": "assets/entry-client-B-Y49Ghh.js",
+    "name": "entry-client",
+    "src": "entry-client.js",
+    "isEntry": true,
+    "css": [
+      "assets/entry-client-CA0RvmSK.css"
+    ]
+  }
+}

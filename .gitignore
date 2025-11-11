@@ -8,6 +8,8 @@ node/npm-debug.log*
 node/package-lock.json
 node/dist/
 
+node/*/node_modules/
+
 # PHP build assets
 php/public/build/
 

@@ -1,0 +1,68 @@
+<script>
+  import { onMount } from 'svelte'
+  import { DEFAULT_PAGE, resolvePage } from './pages/index.js'
+
+  export let pageName = DEFAULT_PAGE
+  export let context = {}
+
+  let component = resolvePage(pageName)
+
+  $: component = resolvePage(pageName)
+
+  if (import.meta.env.SSR) {
+    console.info('[ssr] rendering page', pageName)
+  }
+
+  onMount(() => {
+    console.info('[hydrate] props.pageName', pageName, 'context', context)
+  })
+</script>
+
+<main class="page">
+  <div class="renderer-label">Svelte Renderer</div>
+  <svelte:component this={component} {context} />
+</main>
+
+<style>
+  .page {
+    font-family: Avenir, Helvetica, Arial, sans-serif;
+    text-transform: none;
+    letter-spacing: normal;
+    min-height: 100%;
+    padding: 2.5rem;
+    max-width: 820px;
+    margin: 0 auto;
+    line-height: 1.6;
+    display: flex;
+    flex-direction: column;
+    gap: 1.75rem;
+    border-radius: 28px;
+    background: #0d1b2a;
+    box-shadow:
+      0 20px 45px rgba(8, 47, 73, 0.45),
+      inset 0 0 0 1px rgba(255, 255, 255, 0.15);
+    color: #e2f1ff;
+  }
+
+  .renderer-label {
+    align-self: flex-end;
+    background: rgba(148, 163, 184, 0.18);
+    border: 1px solid rgba(148, 163, 184, 0.35);
+    border-radius: 999px;
+    color: #93c5fd;
+    font-size: 0.75rem;
+    letter-spacing: 0.12em;
+    padding: 0.35rem 0.85rem;
+    text-transform: uppercase;
+  }
+
+  :global(h1),
+  :global(h2) {
+    margin: 0;
+  }
+
+  :global(p) {
+    color: rgba(226, 241, 255, 0.85);
+  }
+</style>
+

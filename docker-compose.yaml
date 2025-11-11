@@ -10,18 +10,24 @@ services:
     volumes:
       - ./php/public:/var/www/html
     depends_on:
-      - node
+      - vue
+      - svelte
+      - next
     environment:
-      NODE_INTERNAL_URL: http://node:5173
+      NODE_VUE_INTERNAL_URL: http://vue:5173
+      NODE_SVELTE_INTERNAL_URL: http://svelte:5174
+      NODE_NEXT_INTERNAL_URL: http://next:5175
 
-  node:
+  vue:
     build:
-      context: ./node
+      context: ./node/vue
       dockerfile: Dockerfile
     expose:
       - "5173"
     volumes:
       - ./php/public/build:/assets-out
+    environment:
+      PORT: 5173
     healthcheck:
       test:
         [
@@ -29,6 +35,52 @@ services:
           "node",
           "-e",
           "fetch('http://localhost:5173/health').then(res => res.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  svelte:
+    build:
+      context: ./node/svelte
+      dockerfile: Dockerfile
+    expose:
+      - "5174"
+    volumes:
+      - ./php/public/build:/assets-out
+    environment:
+      PORT: 5174
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://localhost:5174/health').then(res => res.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  next:
+    build:
+      context: ./node/next
+      dockerfile: Dockerfile
+    expose:
+      - "5175"
+    volumes:
+      - ./php/public/build:/assets-out
+    environment:
+      PORT: 5175
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://localhost:5175/health').then(res => res.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))",
         ]
       interval: 10s
       timeout: 5s

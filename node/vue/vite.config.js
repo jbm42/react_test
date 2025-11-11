@@ -5,7 +5,7 @@ import { dirname, resolve } from 'node:path'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
-const rootDir = resolve(__dirname, './vue')
+const rootDir = __dirname
 const buildTarget = process.env.BUILD_TARGET
 const isSsr = buildTarget === 'ssr'
 
@@ -28,7 +28,7 @@ export default defineConfig(() => {
       port: 5173,
       host: '0.0.0.0',
       strictPort: true,
-      allowedHosts: ['node'],
+      allowedHosts: ['vue'],
     },
     build: {
       target: 'esnext',

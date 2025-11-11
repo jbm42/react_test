@@ -21,6 +21,30 @@ function redirectWithQuery(array $params): void
     exit;
 }
 
+function rendererAwareUrl(string $path, array $overrides = [], array $omit = []): string
+{
+    $params = $_GET;
+
+    foreach ($omit as $key) {
+        unset($params[$key]);
+    }
+
+    foreach ($overrides as $key => $value) {
+        if ($value === null) {
+            unset($params[$key]);
+        } else {
+            $params[$key] = $value;
+        }
+    }
+
+    $query = http_build_query($params);
+
+    return $query === '' ? $path : $path . '?' . $query;
+}
+
+$availableRenderers = reactiveRendererOptions();
+$currentRenderer = reactiveNormalizeRenderer($_GET['renderer'] ?? null);
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     if (isset($_POST['toggle_theme'])) {
         $current = isset($_GET['theme']) ? $_GET['theme'] : '0';
@@ -33,12 +57,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $next = $current === '0' ? '1' : '0';
         redirectWithQuery(['ssr' => $next]);
     }
+
+    if (isset($_POST['set_renderer'])) {
+        $selected = reactiveNormalizeRenderer($_POST['renderer'] ?? null);
+        redirectWithQuery(['renderer' => $selected]);
+    }
 }
 
 $pageName = 'test-one';
 $title = 'Test Page One — Counter Demo';
 $altStylesheet = isset($_GET['theme']) ? $_GET['theme'] === '1' : false;
 $ssrEnabled = !isset($_GET['ssr']) || $_GET['ssr'] !== '0';
+$currentRendererLabel = reactiveRendererLabel($currentRenderer);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -56,15 +86,15 @@ $ssrEnabled = !isset($_GET['ssr']) || $_GET['ssr'] !== '0';
       <strong>SSR Demo</strong>
     </div>
     <nav>
-      <a href="/test-one.php">Test One</a>
-      <a href="/test-two.php">Test Two</a>
+      <a href="<?= htmlspecialchars(rendererAwareUrl('/test-one.php', ['renderer' => $currentRenderer]), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">Test One</a>
+      <a href="<?= htmlspecialchars(rendererAwareUrl('/test-two.php', ['renderer' => $currentRenderer]), ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">Test Two</a>
     </nav>
   </header>
 
   <main>
     <section>
       <h1><?= htmlspecialchars($title, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?></h1>
-      <p>This host template exercises the counter-driven Vue component.</p>
+      <p>This host template exercises the counter-driven <?= htmlspecialchars($currentRendererLabel, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?> component.</p>
       <p>Server time: <?= date("H:i:s") ?></p>
       <form action="" method="post" style="margin-top:1.5rem;">
         <button type="submit" name="toggle_theme" value="1" class="toggle-theme">
@@ -76,10 +106,25 @@ $ssrEnabled = !isset($_GET['ssr']) || $_GET['ssr'] !== '0';
           <?= $ssrEnabled ? 'Disable SSR (Client Render Only)' : 'Enable SSR Rendering' ?>
         </button>
       </form>
+      <form action="" method="post" style="margin-top:1rem;">
+        <label for="renderer-select"><strong>Renderer</strong></label>
+        <div style="display:flex; gap:0.75rem; align-items:center; margin-top:0.5rem;">
+          <select id="renderer-select" name="renderer">
+            <?php foreach ($availableRenderers as $key => $info): ?>
+              <option value="<?= htmlspecialchars($key, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>" <?= $key === $currentRenderer ? 'selected' : '' ?>>
+                <?= htmlspecialchars($info['label'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>
+              </option>
+            <?php endforeach; ?>
+          </select>
+          <button type="submit" name="set_renderer" value="1" class="switch-renderer">
+            Switch
+          </button>
+        </div>
+      </form>
       <p class="ssr-status">SSR is currently <strong><?= $ssrEnabled ? 'enabled' : 'disabled' ?></strong>.</p>
     </section>
 
-    <?= reactiveComponent($pageName) ?>
+    <?= reactiveComponent($pageName, [], $currentRenderer) ?>
   </main>
 </body>
 </html>

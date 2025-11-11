@@ -1,11 +1,11 @@
 import { defineConfig } from 'vite'
-import vue from '@vitejs/plugin-vue'
+import { svelte } from '@sveltejs/vite-plugin-svelte'
 import { fileURLToPath } from 'node:url'
 import { dirname, resolve } from 'node:path'
 
 const __filename = fileURLToPath(import.meta.url)
 const __dirname = dirname(__filename)
-const rootDir = resolve(__dirname, './vue')
+const rootDir = __dirname
 const buildTarget = process.env.BUILD_TARGET
 const isSsr = buildTarget === 'ssr'
 
@@ -19,16 +19,23 @@ export default defineConfig(() => {
     : resolve(rootDir, './entry-client.js')
 
   return {
-    plugins: [vue()],
+    plugins: [
+      svelte({
+        compilerOptions: {
+          hydratable: true,
+        },
+        emitCss: true,
+      }),
+    ],
     root: rootDir,
     define: {
       'process.env': {},
     },
     server: {
-      port: 5173,
+      port: 5174,
       host: '0.0.0.0',
       strictPort: true,
-      allowedHosts: ['node'],
+      allowedHosts: ['svelte'],
     },
     build: {
       target: 'esnext',
@@ -42,3 +49,4 @@ export default defineConfig(() => {
     },
   }
 })
+

@@ -1,0 +1,17 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+  color: rgba(226, 241, 255, 0.85);
+}
+
+.heading {
+  margin: 0;
+  color: #e2f1ff;
+}
+
+.lead {
+  margin: 0;
+  color: rgba(226, 241, 255, 0.85);
+}
+
