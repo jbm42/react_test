@@ -1,9 +1,8 @@
 <?php
-require_once __DIR__ . '/ssr_bootstrap.php';
+require_once __DIR__ . '/reactive.php';
 
 $pageName = 'test-two';
 $title = 'Test Page Two — Highlight Toggle';
-$ssr = getSsrPayload($pageName);
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,9 +53,6 @@ $ssr = getSsrPayload($pageName);
       padding: 2rem;
     }
   </style>
-<?php foreach ($ssr['css'] as $href): ?>
-  <link rel="stylesheet" href="<?= htmlspecialchars($href, ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>">
-<?php endforeach; ?>
 </head>
 <body>
   <header>
@@ -76,16 +72,8 @@ $ssr = getSsrPayload($pageName);
       <p>Server time: <?= date("H:i:s") ?></p>
     </section>
 
-    <div id="reactive" data-page="<?= htmlspecialchars($ssr['page'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>"><?= $ssr['html'] ?></div>
+    <?= reactiveComponent($pageName) ?>
   </main>
-
-<?php if ($ssr['entry'] !== null): ?>
-  <script type="module" src="<?= htmlspecialchars($ssr['entry'], ENT_QUOTES | ENT_SUBSTITUTE, 'UTF-8') ?>"></script>
-<?php else: ?>
-  <script>
-    console.error('SSR entry not available. Check Node server logs.');
-  </script>
-<?php endif; ?>
 </body>
 </html>
 
