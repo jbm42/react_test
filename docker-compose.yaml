@@ -13,10 +13,12 @@ services:
       - vue
       - svelte
       - next
+      - react
     environment:
       NODE_VUE_INTERNAL_URL: http://vue:5173
       NODE_SVELTE_INTERNAL_URL: http://svelte:5174
       NODE_NEXT_INTERNAL_URL: http://next:5175
+      NODE_REACT_INTERNAL_URL: http://react:5176
 
   vue:
     build:
@@ -81,6 +83,29 @@ services:
           "node",
           "-e",
           "fetch('http://localhost:5175/health').then(res => res.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))",
+        ]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    restart: unless-stopped
+
+  react:
+    build:
+      context: ./node/react
+      dockerfile: Dockerfile
+    expose:
+      - "5176"
+    volumes:
+      - ./php/public/build:/assets-out
+    environment:
+      PORT: 5176
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "node",
+          "-e",
+          "fetch('http://localhost:5176/health').then(res => res.ok ? process.exit(0) : process.exit(1)).catch(() => process.exit(1))",
         ]
       interval: 10s
       timeout: 5s

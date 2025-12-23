@@ -1,0 +1,22 @@
+{
+  "name": "react-inject-test",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run build && NODE_ENV=production node server.js",
+    "build": "npm run build:client && npm run build:ssr",
+    "build:client": "BUILD_TARGET=client vite build",
+    "build:ssr": "BUILD_TARGET=ssr vite build --ssr",
+    "serve": "NODE_ENV=production node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.1",
+    "vite": "^5.4.0"
+  }
+}
+

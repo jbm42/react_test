@@ -29,6 +29,10 @@ function reactiveRendererCatalog(): array
             'label' => 'Next.js (React)',
             'base_url' => reactiveResolveRendererBaseUrl('NODE_NEXT_INTERNAL_URL', 'http://next:5175'),
         ],
+        'react' => [
+            'label' => 'React',
+            'base_url' => reactiveResolveRendererBaseUrl('NODE_REACT_INTERNAL_URL', 'http://react:5176'),
+        ],
     ];
 
     return $catalog;
