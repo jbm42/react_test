@@ -1,0 +1,21 @@
+{
+  "name": "solid-inject-test",
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "npm run build && NODE_ENV=production node server.js",
+    "build": "npm run build:client && npm run build:ssr",
+    "build:client": "BUILD_TARGET=client vite build",
+    "build:ssr": "BUILD_TARGET=ssr vite build --ssr",
+    "serve": "NODE_ENV=production node server.js"
+  },
+  "dependencies": {
+    "express": "^4.19.2",
+    "solid-js": "^1.8.7"
+  },
+  "devDependencies": {
+    "vite": "^5.4.0",
+    "vite-plugin-solid": "^2.10.0"
+  }
+}
+

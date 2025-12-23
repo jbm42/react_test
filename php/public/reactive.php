@@ -33,6 +33,10 @@ function reactiveRendererCatalog(): array
             'label' => 'React',
             'base_url' => reactiveResolveRendererBaseUrl('NODE_REACT_INTERNAL_URL', 'http://react:5176'),
         ],
+        'solid' => [
+            'label' => 'Solid',
+            'base_url' => reactiveResolveRendererBaseUrl('NODE_SOLID_INTERNAL_URL', 'http://solid:5178'),
+        ],
     ];
 
     return $catalog;
